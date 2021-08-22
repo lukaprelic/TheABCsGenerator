@@ -121,4 +121,5 @@ def addBorder(borderColour, img):
 
 
 if __name__ == '__main__':
+    #generateAlphabet()
     generateAll(51, 200)
