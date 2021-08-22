@@ -1,5 +1,6 @@
 import glob
 import string
+from pathlib import Path
 
 import generator
 import offsets
@@ -14,23 +15,22 @@ def generateAlphabet():
         letter2 = letter2.upper()
         letter3 = 'C'
         font = 'Amber Sans Serif'
-        hatPath = 'Hats/Bubblegum.png'
+        hat = 'Bubblegum'
         hatOffsets = offsets.Offsets('letterHatOffsets.csv')
-        hatName = hatPath[5:-4]
-        hatOffsetsForLetter = hatOffsets.getOffsetsForFontLetter(hatName, font, letter2)
         generateImage(id=index,
-                      hatoffsets=hatOffsetsForLetter,
+                      hatOffsets=hatOffsets,
                       font=font,
                       backgroundPath='Backgrounds/Desert.png',
                       borderColour='white',
-                      letter1Path=('Letters/%s/SaA %s.png' % (font, letter1)),
-                      letter2Path=('Letters/%s/SaA %s.png' % (font, letter2)),
-                      letter3Path=('Letters/%s/SaA %s.png' % (font, letter3)),
-                      hatPath=hatPath,
+                      letter1Char=letter1,
+                      letter2Char=letter2,
+                      letter3Char=letter3,
+                      hat=hat,
                       addBorder=False)
 
 
 def generateAll(countstart, count):
+    Path("Generated").mkdir(parents=True, exist_ok=True)
     hatOffsets = offsets.Offsets('letterHatOffsets.csv')
     for index in range(countstart, countstart + count):
         background, letter1, letter2, letter3, font, hat = generator.generateCombination()
@@ -78,8 +78,7 @@ def generateImage(id: int, hatOffsets, font, backgroundPath: string, borderColou
     finalImageFileName = "Generated/%d ABCs %s%s%s %s.png" % \
                          (id, letter1Path[-5], letter2Path[-5], letter3Path[-5], hat)
     print("generated image: ", finalImageFileName)
-    img.save(finalImageFileName, compress_level=1)
-    # img.show(img)
+    img.save(finalImageFileName, compress_level=5)
 
 
 def addHat(hatName, hatoffsets, img, letter2xCoord, letterxCoordoffset):
@@ -103,7 +102,6 @@ def getHatImage(hatName):
     hat = Image.open(fp=hatPath)
     (hatWidth, hatHeight) = hat.size
     hatLargeCanvas = Image.new(mode='RGBA', size=(int(hatWidth * 1.3), int(hatWidth * 1.3)))
-    # hatLargeCanvas = ImageOps.expand(hatLargeCanvas, border=2, fill='black')
     hatxyCoord = (int(hatWidth * (0.3 / 2 + 1) - hatWidth),
                   int(hatHeight * (0.3 / 2 + 1) - hatHeight) - 35)
     hatLargeCanvas.paste(hat, hatxyCoord)
