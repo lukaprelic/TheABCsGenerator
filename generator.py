@@ -1,7 +1,4 @@
-import random
-from collections import Counter
 import pandas
-
 import numpy as np
 
 letterRarities = {
@@ -32,6 +29,7 @@ letterRarities = {
     'Y': 0.017779,
     'Z': 0.002722,
 }
+
 backgroundRarities = {
     'Bubblegum': 0.11,
     'City': 0.11,
@@ -76,7 +74,6 @@ fontRarity = {
 
 
 def generateCombination():
-    # results = random.choice(things, chance)
     background = np.random.choice(list(backgroundRarities.keys()), p=list(backgroundRarities.values()))
     font = np.random.choice(list(fontRarity.keys()), p=list(fontRarity.values()))
     letter1 = np.random.choice(list(letterRarities.keys()), p=list(letterRarities.values()))
@@ -92,8 +89,6 @@ if __name__ == '__main__':
         combination = generateCombination()
         row = list(combination)
         rows.append(row)
-
-    # print(Counter(rows))
     cities = pandas.DataFrame(rows,
                               columns=
                               ['background', 'letter1', 'letter2', 'letter3', 'font', 'hat'])

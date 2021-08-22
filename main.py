@@ -1,6 +1,7 @@
-import glob
 import string
 from pathlib import Path
+
+import pandas
 
 import generator
 import offsets
@@ -32,8 +33,11 @@ def generateAlphabet():
 def generateAll(countstart, count):
     Path("Generated").mkdir(parents=True, exist_ok=True)
     hatOffsets = offsets.Offsets('letterHatOffsets.csv')
+    csvRows = []
+
     for index in range(countstart, countstart + count):
         background, letter1, letter2, letter3, font, hat = generator.generateCombination()
+        csvRows.append(list((index, background, letter1, letter2, letter3, font, hat)))
         print((background, letter1, letter2, letter3, font, hat))
         generateImage(id=index,
                       hatOffsets=hatOffsets,
@@ -45,6 +49,9 @@ def generateAll(countstart, count):
                       letter3Char=letter3,
                       hat=hat,
                       addBorder=False)
+    csv = pandas.DataFrame(csvRows,
+                           columns=['id', 'background', 'letter1', 'letter2', 'letter3', 'font', 'hat'])
+    csv.to_csv('Generated/metadata.csv', index=False)
 
 
 def generateImage(id: int, hatOffsets, font, backgroundPath: string, borderColour: string,
@@ -96,7 +103,7 @@ def addHat(hatName, hatoffsets, img, letter2xCoord, letterxCoordoffset):
     img.paste(hat, (hatxCoord, hatyCoord), hat)
 
 
-# increase size to allow for no rotation cuttofs
+# increase size to allow for no rotation cuttoffs
 def getHatImage(hatName):
     hatPath = ('Hats/%s.png' % (hatName))
     hat = Image.open(fp=hatPath)
