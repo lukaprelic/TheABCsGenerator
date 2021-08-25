@@ -8,10 +8,10 @@ class Offsets:
     def __init__(self, path):
         self.data = pandas.read_csv(path)
 
-    def getOffsetsForFontLetter(self, hat, font, letter):
+    def getOffsetsForFontLetter(self, hat, fontAndColourComb, letter):
         d = self.data
         rowIndex = ord(letter) - ord('A')
-        fontWithNoColour = ' '.join(font.split(' ')[1:])
+        fontWithNoColour = ' '.join(fontAndColourComb.split(' ')[:-1])
         hatxOffset, hatyOffset, hatScalar, rotation = (d[hat + ' ' + fontWithNoColour][rowIndex].split(","))
         hatxOffset, hatyOffset, hatScalar, rotation = \
             int(hatxOffset), int(hatyOffset), float(hatScalar), int(rotation)

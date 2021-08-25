@@ -15,12 +15,12 @@ def generateAlphabet():
         letter1 = 'A'
         letter2 = letter2.upper()
         letter3 = 'C'
-        font = 'Amber Sans Serif'
+        font = 'Sans Serif Amber'
         hat = 'Bubblegum'
         hatOffsets = offsets.Offsets('letterHatOffsets.csv')
         generateImage(id=index,
                       hatOffsets=hatOffsets,
-                      font=font,
+                      fontAndColourComb=font,
                       backgroundPath='Backgrounds/Desert.png',
                       borderColour='white',
                       letter1Char=letter1,
@@ -36,12 +36,20 @@ def generateAll(countstart, count):
     csvRows = []
 
     for index in range(countstart, countstart + count):
-        background, letter1, letter2, letter3, font, hat = generator.generateCombination()
-        csvRows.append(list((index, background, letter1, letter2, letter3, font, hat)))
-        print((background, letter1, letter2, letter3, font, hat))
+        background, letter1, letter2, letter3, fontAndColourComb, hat = generator.generateCombination()
+        letterPermutation = letter1 + letter2 + letter3
+        font = ' '.join(fontAndColourComb.split(' ')[:-1])
+        fontColour = fontAndColourComb.split(' ')[-1]
+        special = ''
+        csvRows.append(list((index, background, font,
+                             fontAndColourComb, fontColour, hat,
+                             letter1, letter2, letter3, letterPermutation, special)))
+        print(
+            (index, background, font, fontAndColourComb, fontColour, hat, letter1,
+             letter2, letter3, letterPermutation, special))
         generateImage(id=index,
                       hatOffsets=hatOffsets,
-                      font=font,
+                      fontAndColourComb=fontAndColourComb,
                       backgroundPath='Backgrounds/%s.png' % background,
                       borderColour='white',
                       letter1Char=letter1,
@@ -50,20 +58,22 @@ def generateAll(countstart, count):
                       hat=hat,
                       addBorder=False)
     csv = pandas.DataFrame(csvRows,
-                           columns=['id', 'background', 'letter1', 'letter2', 'letter3', 'font', 'hat'])
+                           columns=['ID', 'BACKGROUND', 'FONT', 'FONT & COLOUR COMBINATION',
+                                    'FONT COLOUR', 'HAT', 'LETTER1', 'LETTER2',
+                                    'LETTER3', 'LETTER PERMUTATION', 'SPECIAL'])
     csv.to_csv('Generated/metadata.csv', index=False)
 
 
-def generateImage(id: int, hatOffsets, font, backgroundPath: string, borderColour: string,
+def generateImage(id: int, hatOffsets, fontAndColourComb, backgroundPath: string, borderColour: string,
                   letter1Char: string, letter2Char: string,
                   letter3Char: string, hat: string, addBorder: bool) -> None:
     img = Image.open(fp=backgroundPath)
     if addBorder is True:
         img = addBorder(borderColour, img)
     width, height = img.size
-    letter1Path = ('Letters/%s/%s.png' % (font, letter1Char))
-    letter2Path = ('Letters/%s/%s.png' % (font, letter2Char))
-    letter3Path = ('Letters/%s/%s.png' % (font, letter3Char))
+    letter1Path = ('Letters/%s/%s.png' % (fontAndColourComb, letter1Char))
+    letter2Path = ('Letters/%s/%s.png' % (fontAndColourComb, letter2Char))
+    letter3Path = ('Letters/%s/%s.png' % (fontAndColourComb, letter3Char))
     letter1 = Image.open(fp=letter1Path)
     letterWidth, letterHeight = letter1.size
     letter2 = Image.open(fp=letter2Path)
@@ -78,9 +88,9 @@ def generateImage(id: int, hatOffsets, font, backgroundPath: string, borderColou
     img.paste(letter1, (letter1xCoord, letterPasteyCoord), letter1)
     img.paste(letter2, (letter2xCoord, letterPasteyCoord), letter2)
     img.paste(letter3, (letter3xCoord, letterPasteyCoord), letter3)
-    isSerifFont = any(allowedFonts in font for allowedFonts in ['Serif', 'Sans Serif'])
+    isSerifFont = any(allowedFonts in fontAndColourComb for allowedFonts in ['Serif', 'Sans Serif'])
     if hat != 'None' and isSerifFont:
-        hatOffsetsForLetter = hatOffsets.getOffsetsForFontLetter(hat, font, letter2Char)
+        hatOffsetsForLetter = hatOffsets.getOffsetsForFontLetter(hat, fontAndColourComb, letter2Char)
         addHat(hat, hatOffsetsForLetter, img, letter2xCoord, letterxCoordoffset)
     finalImageFileName = "Generated/%d ABCs %s%s%s %s.png" % \
                          (id, letter1Path[-5], letter2Path[-5], letter3Path[-5], hat)
@@ -121,5 +131,5 @@ def addBorder(borderColour, img):
 
 
 if __name__ == '__main__':
-    #generateAlphabet()
+    # generateAlphabet()
     generateAll(51, 200)

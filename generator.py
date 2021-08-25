@@ -58,18 +58,18 @@ hatRarity = {
 }
 
 fontRarity = {
-    'Amber Sans Serif': 0.3300,
-    'Amber Serif': 0.1372,
-    'Amber Calligraphy': 0.1072,
-    'Red Sans Serif': 0.2022,
-    'Red Serif': 0.0872,
-    'Red Calligraphy': 0.0722,
-    'Silver Sans Serif': 0.0250,
-    'Silver Serif': 0.0150,
-    'Silver Calligraphy': 0.0100,
-    'Gold Sans Serif': 0.0080,
-    'Gold Serif': 0.0040,
-    'Gold Calligraphy': 0.0020,
+    'Sans Serif Amber': 0.3300,
+    'Serif Amber': 0.1372,
+    'Calligraphy Amber': 0.1072,
+    'Sans Serif Red': 0.2022,
+    'Serif Red': 0.0872,
+    'Calligraphy Red': 0.0722,
+    'Sans Serif Silver': 0.0250,
+    'Serif Silver': 0.0150,
+    'Calligraphy Silver': 0.0100,
+    'Sans Serif Gold': 0.0080,
+    'Serif Gold': 0.0040,
+    'Calligraphy Gold': 0.0020,
 }
 
 
