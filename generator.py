@@ -38,7 +38,7 @@ backgroundRarities = {
     'Heaven': 0.11,
     'Hell': 0.11,
     'Moon': 0.11,
-    'Jungle': 0.11,
+    'Nature': 0.11,
     'Ocean': 0.11,
     'Gold': 0.01,
 }

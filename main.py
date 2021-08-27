@@ -61,9 +61,9 @@ def generateAll(countstart, count):
                       hat=hat,
                       addBorder=False)
     csv = pandas.DataFrame(csvRows,
-                           columns=['ID', 'BACKGROUND', 'FONT', 'FONT & COLOUR COMBINATION',
-                                    'FONT COLOUR', 'HAT', 'LETTER1', 'LETTER2',
-                                    'LETTER3', 'LETTER PERMUTATION', 'SPECIAL'])
+                           columns=['Id', 'Background', 'Font', 'Font & Colour Combination',
+                                    'Font Colour', 'Hat', 'Letter1', 'Letter2',
+                                    'Letter3', 'Letter Permutation', 'Special'])
     csv.to_csv('Generated/metadata.csv', index=False)
 
 
