@@ -41,6 +41,9 @@ def generateAll(countstart, count):
         font = ' '.join(fontAndColourComb.split(' ')[:-1])
         fontColour = fontAndColourComb.split(' ')[-1]
         special = ''
+        isNoHatFont = any(noHatFonts in font for noHatFonts in ['Calligraphy'])
+        if isNoHatFont:
+            hat = 'None'
         csvRows.append(list((index, background, font,
                              fontAndColourComb, fontColour, hat,
                              letter1, letter2, letter3, letterPermutation, special)))
@@ -88,14 +91,13 @@ def generateImage(id: int, hatOffsets, fontAndColourComb, backgroundPath: string
     img.paste(letter1, (letter1xCoord, letterPasteyCoord), letter1)
     img.paste(letter2, (letter2xCoord, letterPasteyCoord), letter2)
     img.paste(letter3, (letter3xCoord, letterPasteyCoord), letter3)
-    isSerifFont = any(allowedFonts in fontAndColourComb for allowedFonts in ['Serif', 'Sans Serif'])
-    if hat != 'None' and isSerifFont:
+    if hat != 'None':
         hatOffsetsForLetter = hatOffsets.getOffsetsForFontLetter(hat, fontAndColourComb, letter2Char)
         addHat(hat, hatOffsetsForLetter, img, letter2xCoord, letterxCoordoffset)
     finalImageFileName = "Generated/%d ABCs %s%s%s %s.png" % \
                          (id, letter1Path[-5], letter2Path[-5], letter3Path[-5], hat)
     print("generated image: ", finalImageFileName)
-    img.save(finalImageFileName, compress_level=5)
+    img.save(finalImageFileName, compress_level=0)
 
 
 def addHat(hatName, hatoffsets, img, letter2xCoord, letterxCoordoffset):
