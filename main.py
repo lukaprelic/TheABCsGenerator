@@ -41,15 +41,16 @@ def generateAll(countstart, count):
         font = ' '.join(fontAndColourComb.split(' ')[:-1])
         fontColour = fontAndColourComb.split(' ')[-1]
         special = ''
+        name = 'The ABCs #{}'.format(index)
         isNoHatFont = any(noHatFonts in font for noHatFonts in ['Calligraphy'])
         if isNoHatFont:
             hat = 'None'
         csvRows.append(list((index, background, font,
                              fontAndColourComb, fontColour, hat,
-                             letter1, letter2, letter3, letterPermutation, special)))
+                             letter1, letter2, letter3, letterPermutation, special, name)))
         print(
             (index, background, font, fontAndColourComb, fontColour, hat, letter1,
-             letter2, letter3, letterPermutation, special))
+             letter2, letter3, letterPermutation, special, name))
         generateImage(id=index,
                       hatOffsets=hatOffsets,
                       fontAndColourComb=fontAndColourComb,
@@ -61,9 +62,9 @@ def generateAll(countstart, count):
                       hat=hat,
                       addBorder=False)
     csv = pandas.DataFrame(csvRows,
-                           columns=['Id', 'Background', 'Font', 'Font & Colour Combination',
-                                    'Font Colour', 'Hat', 'Letter1', 'Letter2',
-                                    'Letter3', 'Letter Permutation', 'Special'])
+                           columns=['ID', 'Background', 'Font', 'Font & Colour Combination',
+                                    'Font Colour', 'Hat', 'Letter 1', 'Letter 2',
+                                    'Letter 3', 'Letter Permutation', 'Special', 'Name'])
     csv.to_csv('Generated/metadata.csv', index=False)
 
 
@@ -134,4 +135,4 @@ def addBorder(borderColour, img):
 
 if __name__ == '__main__':
     # generateAlphabet()
-    generateAll(51, 200)
+    generateAll(251, 50)

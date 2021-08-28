@@ -89,7 +89,3 @@ if __name__ == '__main__':
         combination = generateCombination()
         row = list(combination)
         rows.append(row)
-    cities = pandas.DataFrame(rows,
-                              columns=
-                              ['background', 'letter1', 'letter2', 'letter3', 'font', 'hat'])
-    cities.to_csv('generated.csv')

@@ -1,3 +1,4 @@
+import itertools
 import os
 
 import pandas
@@ -5,7 +6,7 @@ from selenium import webdriver
 import time
 
 
-def uploadFiles(startItemId):
+def uploadFiles(startItemId, count):
     chop = webdriver.ChromeOptions()
     chop.add_extension('MetaMask_v10.0.2.crx')
     driver = webdriver.Opera(options=chop)
@@ -16,23 +17,28 @@ def uploadFiles(startItemId):
     tabs2 = driver.window_handles
     driver.switch_to.window(tabs2[1])
     time.sleep(2)
-    #print('Starting with item id:', startItemId - 51)
+    startRow = startItemId - df.at[0, 'ID']
+    print('startRow', startRow)
     for index, row in df.iterrows():
-        print('first row:', index, row)
+        if index < startRow or index >= startRow + count:
+            # print('skipping row:', index, row['ID'])
+            continue
+        print('Running row:', index, row['ID'])
         if index > 0:
             createPage = driver.find_element_by_xpath(
                 '//*[@id="__next"]/div[1]/div[1]/nav/ul/li[4]/a')
+            time.sleep(5)
             createPage.click()
         print("ROW:", row)
-        print(row['Id'], row['Background'], row['Font'], row['Font & Colour Combination'],
-              row['Font Colour'], row['Hat'], row['Letter1'], row['Letter2'],
-              row['Letter3'], row['Letter Permutation'], row['Special'])
+        print(row['ID'], row['Background'], row['Font'], row['Font & Colour Combination'],
+              row['Font Colour'], row['Hat'], row['Letter 1'], row['Letter 2'],
+              row['Letter 3'], row['Letter Permutation'], row['Special'], row['Name'])
         imageUpload = driver.find_element_by_xpath('//*[@id="media"]')
         imagePath = os.path.abspath('Generated\\51 ABCs SLN None.png')
         imageUpload.send_keys(imagePath)
 
         name = driver.find_element_by_xpath('//*[@id="name"]')
-        name.send_keys('The ABCs #{}'.format(row['Id']))
+        name.send_keys(name)
         description = driver.find_element_by_xpath('//*[@id="description"]')
         description.send_keys(row['Letter Permutation'])
         collectionName = driver.find_element_by_xpath(
@@ -41,17 +47,15 @@ def uploadFiles(startItemId):
         collectionPlusButton = driver.find_element_by_xpath(
             '//*[@id="__next"]/div[1]/main/div/div/section/div/form/section[6]/div[1]/div/div[2]/button')
         collectionPlusButton.click()
-        time.sleep(1.5)
+        time.sleep(2.5)
         print('starting properties population')
         for i, (key, value) in enumerate(row.items()):
-            if key in ['Id', 'Special']:
+            if key in ['ID', 'Special', 'Name']:
                 continue
             collectionAddPropButton = driver.find_element_by_xpath('/html/body/div[2]/div/div/div/section/button')
             collectionAddPropButton.click()
-            print('index: ', i, i + 1)
             propInputKeyXpath = (
                 '/html/body/div[2]/div/div/div/section/table/tbody/tr[{}]/td[1]/div/div/input'.format(i + 1))
-            print('propInputKeyXpath', propInputKeyXpath)
             propKey = driver.find_element_by_xpath(
                 propInputKeyXpath)
             propKey.send_keys(key)
@@ -66,14 +70,14 @@ def uploadFiles(startItemId):
         createNFT = driver.find_element_by_xpath(
             '//*[@id="__next"]/div[1]/main/div/div/section/div/form/div/div[1]/span/button')
         createNFT.click()
-        print('creating nft ', row['Id'], row['Background'], row['Font'], row['Font & Colour Combination'],
+        print('creating nft ', row['ID'], row['Background'], row['Font'], row['Font & Colour Combination'],
               row['Hat'], row['Letter Permutation'])
-        time.sleep(5)
+        time.sleep(6)
         closeCreateModal = driver.find_element_by_xpath(
             '/html/body/div[4]/div/div/div/div[2]/button/i')
         closeCreateModal.click()
 
-        time.sleep(500)
+        # time.sleep(500)
 
 
 def signIntoMeta(driver):
@@ -88,12 +92,9 @@ def signIntoMeta(driver):
     time.sleep(0.5)
     button = driver.find_element_by_xpath(
         '//*[@id="app-content"]/div/div[3]/div/div/div[2]/div/div[2]/div[1]/button')
-    print(button)
     button.click()
-    print('import clicked')
     button = driver.find_element_by_xpath(
         '//*[@id="app-content"]/div/div[3]/div/div/div/div[5]/div[1]/footer/button[1]')
-    print('no thanks clicked')
     button.click()
     time.sleep(0.5)
     mnemonicInput = driver.find_element_by_xpath(
@@ -130,7 +131,6 @@ def signIntoMeta(driver):
     metaicon.click()
     time.sleep(1.5)
     tabs2 = driver.window_handles
-    print(tabs2)
     driver.switch_to.window(tabs2[2])
     connectnext = driver.find_element_by_xpath('//*[@id="app-content"]/div/div[3]/div/div[2]/div[4]/div[2]/button[2]')
     connectnext.click()
@@ -144,4 +144,4 @@ def signIntoMeta(driver):
 
 
 if __name__ == '__main__':
-    uploadFiles(101)
+    uploadFiles(101, 2)
