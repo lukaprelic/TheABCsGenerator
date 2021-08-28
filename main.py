@@ -9,6 +9,7 @@ from string import ascii_lowercase
 
 from PIL import Image, ImageOps
 
+existingCombinations = {}
 
 def generateAlphabet():
     for index, letter2 in enumerate(ascii_lowercase):
@@ -34,9 +35,10 @@ def generateAll(countstart, count):
     Path("Generated").mkdir(parents=True, exist_ok=True)
     hatOffsets = offsets.Offsets('letterHatOffsets.csv')
     csvRows = []
-
+    existingCombinations = generator.getExistingCombinations()
     for index in range(countstart, countstart + count):
-        background, letter1, letter2, letter3, fontAndColourComb, hat = generator.generateCombination()
+        background, letter1, letter2, letter3, fontAndColourComb, hat = \
+            generator.generateCombination(existingCombinations)
         letterPermutation = letter1 + letter2 + letter3
         font = ' '.join(fontAndColourComb.split(' ')[:-1])
         fontColour = fontAndColourComb.split(' ')[-1]

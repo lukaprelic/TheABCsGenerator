@@ -73,15 +73,24 @@ fontRarity = {
 }
 
 
-def generateCombination():
+def generateCombination(existingCombinations: dict):
     background = np.random.choice(list(backgroundRarities.keys()), p=list(backgroundRarities.values()))
-    font = np.random.choice(list(fontRarity.keys()), p=list(fontRarity.values()))
+    fontAndColourCombination = np.random.choice(list(fontRarity.keys()), p=list(fontRarity.values()))
     letter1 = np.random.choice(list(letterRarities.keys()), p=list(letterRarities.values()))
     letter2 = np.random.choice(list(letterRarities.keys()), p=list(letterRarities.values()))
     letter3 = np.random.choice(list(letterRarities.keys()), p=list(letterRarities.values()))
     hat = np.random.choice(list(hatRarity.keys()), p=list(hatRarity.values()))
-    return background, letter1, letter2, letter3, font, hat
+    if existingCombinations.get((background, letter1, letter2, letter3, fontAndColourCombination, hat), None) is not None:
+        generateCombination(existingCombinations)
+    existingCombinations[(background, letter1, letter2, letter3, fontAndColourCombination, hat)] = True
+    return background, letter1, letter2, letter3, fontAndColourCombination, hat
 
+def getExistingCombinations():
+    existingCombinations = {}
+    df = pandas.read_csv('Generated/metadata.csv')
+    for index, row in df.iterrows():
+        existingCombinations[(row['Background'], row['Letter 1'], row['Letter 2'], row['Letter 3'], row['Font & Colour Combination'], row['Hat'])] = True
+    return existingCombinations
 
 if __name__ == '__main__':
     rows = []
