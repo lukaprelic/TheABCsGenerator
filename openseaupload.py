@@ -99,6 +99,7 @@ def uploadFiles(startItemId, count, isrinkeby, mnemonicString, walletPwd):
         time.sleep(0.5)
         createNFT = driver.find_element_by_xpath(
             '//*[@id="__next"]/div[1]/main/div/div/section/div/form/div/div[1]/span/button')
+        # time.sleep(5000)
         createNFT.click()
         print('creating nft ', itemId, row['Background'], row['Font'], row['Font & Colour Combination'],
               row['Hat'], row['Letter Permutation'])
@@ -177,8 +178,7 @@ def signIntoMeta(driver, wait, isrinkeby, mnemonicString, walletPwd):
 
 
 if __name__ == '__main__':
-    uploadFiles(181, 50, False,
-                # mnemonicString='april chef unlock damage exclude man direct green slice grape uncover upper', #luka
-                mnemonicString='truck length nerve curious move milk keep develop explain crane crowd sunset',
-                walletPwd='ABCnft92+93'
+    uploadFiles(186, 65, False,
+                mnemonicString='',
+                walletPwd=''
                 )
