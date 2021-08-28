@@ -5,54 +5,71 @@ import pandas
 from selenium import webdriver
 import time
 
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+
+from selenium.webdriver.support import expected_conditions as ExpectedConditions
+
 
 def uploadFiles(startItemId, count):
     chop = webdriver.ChromeOptions()
     chop.add_extension('MetaMask_v10.0.2.crx')
     driver = webdriver.Opera(options=chop)
+    wait = WebDriverWait(driver, 60)
     df = pandas.read_csv('Generated/metadata.csv')
     driver.get('https://testnets.opensea.io/asset/create')
     time.sleep(0.5)
-    signIntoMeta(driver)
+    signIntoMeta(driver, wait)
     tabs2 = driver.window_handles
     driver.switch_to.window(tabs2[1])
     time.sleep(2)
-    startRow = startItemId - df.at[0, 'ID']
-    print('startRow', startRow)
     for index, row in df.iterrows():
-        if index < startRow or index >= startRow + count:
-            # print('skipping row:', index, row['ID'])
+        itemId = row['ID']
+        if itemId < startItemId or itemId >= startItemId + count:
+            print('skipping row:', index, itemId)
             continue
-        print('Running row:', index, row['ID'])
+        print('Running row:', index, itemId)
         if index > 0:
+            wait.until(ExpectedConditions.presence_of_element_located(
+                (By.XPATH, '//*[@id="__next"]/div[1]/div[1]/nav/ul/li[4]/a')))
             createPage = driver.find_element_by_xpath(
                 '//*[@id="__next"]/div[1]/div[1]/nav/ul/li[4]/a')
-            time.sleep(5)
             createPage.click()
-        print("ROW:", row)
-        print(row['ID'], row['Background'], row['Font'], row['Font & Colour Combination'],
+        filePath = 'Generated\\{} ABCs {} {}.png'.format(itemId, row['Letter Permutation'], row['Hat'])
+        print(filePath, itemId, row['Background'], row['Font'], row['Font & Colour Combination'],
               row['Font Colour'], row['Hat'], row['Letter 1'], row['Letter 2'],
               row['Letter 3'], row['Letter Permutation'], row['Special'], row['Name'])
+        wait.until(ExpectedConditions.presence_of_element_located(
+            (By.XPATH, '//*[@id="media"]')))
         imageUpload = driver.find_element_by_xpath('//*[@id="media"]')
-        imagePath = os.path.abspath('Generated\\51 ABCs SLN None.png')
+        imagePath = os.path.abspath(
+            filePath)
         imageUpload.send_keys(imagePath)
 
         name = driver.find_element_by_xpath('//*[@id="name"]')
-        name.send_keys(name)
+        name.send_keys(row['Name'])
         description = driver.find_element_by_xpath('//*[@id="description"]')
         description.send_keys(row['Letter Permutation'])
         collectionName = driver.find_element_by_xpath(
             '//*[@id="__next"]/div[1]/main/div/div/section/div/form/section[5]/div/input')
-        collectionName.send_keys('TheABCs')
-        collectionPlusButton = driver.find_element_by_xpath(
+        collectionName.send_keys('TheABCluka')
+        collectionButtonFromListName = '//button[normalize-space()="{}"]'.format('TheABCluka')
+        wait.until(ExpectedConditions.presence_of_element_located(
+            (By.XPATH, collectionButtonFromListName)))
+        collectionButtonFromList = driver.find_element_by_xpath(collectionButtonFromListName)
+        collectionButtonFromList.click()
+        time.sleep(0.1)
+
+        propertiesPlusButton = driver.find_element_by_xpath(
             '//*[@id="__next"]/div[1]/main/div/div/section/div/form/section[6]/div[1]/div/div[2]/button')
-        collectionPlusButton.click()
-        time.sleep(2.5)
+        propertiesPlusButton.click()
         print('starting properties population')
         for i, (key, value) in enumerate(row.items()):
             if key in ['ID', 'Special', 'Name']:
                 continue
-            collectionAddPropButton = driver.find_element_by_xpath('/html/body/div[2]/div/div/div/section/button')
+            wait.until(ExpectedConditions.presence_of_element_located(
+                (By.XPATH, '//button[normalize-space()="Add more"]')))
+            collectionAddPropButton = driver.find_element_by_xpath('//button[normalize-space()="Add more"]')
             collectionAddPropButton.click()
             propInputKeyXpath = (
                 '/html/body/div[2]/div/div/div/section/table/tbody/tr[{}]/td[1]/div/div/input'.format(i + 1))
@@ -70,17 +87,22 @@ def uploadFiles(startItemId, count):
         createNFT = driver.find_element_by_xpath(
             '//*[@id="__next"]/div[1]/main/div/div/section/div/form/div/div[1]/span/button')
         createNFT.click()
-        print('creating nft ', row['ID'], row['Background'], row['Font'], row['Font & Colour Combination'],
+        print('creating nft ', itemId, row['Background'], row['Font'], row['Font & Colour Combination'],
               row['Hat'], row['Letter Permutation'])
-        time.sleep(6)
-        closeCreateModal = driver.find_element_by_xpath(
-            '/html/body/div[4]/div/div/div/div[2]/button/i')
-        closeCreateModal.click()
+        '/html/body/div[4]/div/div/div/div[1]/header/h4'
+        wait.until(ExpectedConditions.presence_of_element_located(
+            (By.XPATH, "/html/body/div[4]/div/div/div/div[1]/header/h4")))
+        try:
+            closeCreateModal = driver.find_element_by_xpath(
+                '/html/body/div[4]/div/div/div/div[2]/button/i')
+            closeCreateModal.click()
+        except:
+            print('Close Create Modal not found for ', itemId, row['Letter Permutation'])
 
         # time.sleep(500)
 
 
-def signIntoMeta(driver):
+def signIntoMeta(driver, wait):
     tabs2 = driver.window_handles
     driver.switch_to.window(tabs2[0])
     time.sleep(0.5)
@@ -138,10 +160,11 @@ def signIntoMeta(driver):
     connect = driver.find_element_by_xpath(
         '//*[@id="app-content"]/div/div[3]/div/div[2]/div[2]/div[2]/footer/button[2]')
     connect.click()
-    time.sleep(1.5)
+    wait.until(ExpectedConditions.presence_of_element_located(
+        (By.XPATH, '//*[@id="app-content"]/div/div[3]/div/div[3]/button[2]')))
     sign = driver.find_element_by_xpath('//*[@id="app-content"]/div/div[3]/div/div[3]/button[2]')
     sign.click()
 
 
 if __name__ == '__main__':
-    uploadFiles(101, 2)
+    uploadFiles(251, 50)
