@@ -11,15 +11,19 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ExpectedConditions
 
 
-def uploadFiles(startItemId, count):
+def uploadFiles(startItemId, count, isrinkeby):
     chop = webdriver.ChromeOptions()
     chop.add_extension('MetaMask_v10.0.2.crx')
     driver = webdriver.Opera(options=chop)
     wait = WebDriverWait(driver, 60)
     df = pandas.read_csv('Generated/metadata.csv')
-    driver.get('https://testnets.opensea.io/asset/create')
+    if isrinkeby:
+        url = 'https://testnets.opensea.io/asset/create'
+    else:
+        url = 'https://opensea.io/asset/create'
+    driver.get(url)
     time.sleep(0.5)
-    signIntoMeta(driver, wait)
+    signIntoMeta(driver, wait, isrinkeby)
     tabs2 = driver.window_handles
     driver.switch_to.window(tabs2[1])
     time.sleep(2)
@@ -71,16 +75,26 @@ def uploadFiles(startItemId, count):
                 (By.XPATH, '//button[normalize-space()="Add more"]')))
             collectionAddPropButton = driver.find_element_by_xpath('//button[normalize-space()="Add more"]')
             collectionAddPropButton.click()
-            propInputKeyXpath = (
-                '/html/body/div[2]/div/div/div/section/table/tbody/tr[{}]/td[1]/div/div/input'.format(i + 1))
-            propKey = driver.find_element_by_xpath(
-                propInputKeyXpath)
+            propDivNum = 3
+            propKeyInputXpath = '/html/body/div[{}]/div/div/div/section/table/tbody/tr[{}]/td[1]/div/div/input'.format(
+                propDivNum, i + 1)
+            print(propKeyInputXpath)
+            if len(driver.find_elements_by_xpath(propKeyInputXpath)) <= 0:
+                propDivNum = 2
+                propKeyInputXpath = '/html/body/div[{}]/div/div/div/section/table/tbody/tr[{}]/td[1]/div/div/input'.format(
+                    propDivNum, i + 1)
+            # /html/body/div[2]/div/div/div/section/table/tbody/tr[2]/td[1]/div/div/input
+            # /html/body/div[3]/div/div/div/section/table/tbody/tr[1]/td[1]/div/div/input
+            time.sleep(0.1)
+            wait.until(ExpectedConditions.presence_of_element_located(
+                (By.XPATH, propKeyInputXpath)))
+            propKey = driver.find_element_by_xpath(propKeyInputXpath)
             propKey.send_keys(key)
             propKey = driver.find_element_by_xpath(
-                ('/html/body/div[2]/div/div/div/section/table/tbody/tr[{}]/td[2]/div/div/input'.format(i + 1)))
+                '/html/body/div[{}]/div/div/div/section/table/tbody/tr[{}]/td[2]/div/div/input'.format(propDivNum,
+                                                                                                       i + 1))
             propKey.send_keys(value)
-        propSave = driver.find_element_by_xpath(
-            '/html/body/div[2]/div/div/div/footer/button')
+        propSave = driver.find_element_by_xpath('/html/body/div[{}]/div/div/div/footer/button'.format(propDivNum))
         propSave.click()
         print('completed properties population')
         time.sleep(0.5)
@@ -99,10 +113,8 @@ def uploadFiles(startItemId, count):
         except:
             print('Close Create Modal not found for ', itemId, row['Letter Permutation'])
 
-        # time.sleep(500)
 
-
-def signIntoMeta(driver, wait):
+def signIntoMeta(driver, wait, isrinkeby):
     tabs2 = driver.window_handles
     driver.switch_to.window(tabs2[0])
     time.sleep(0.5)
@@ -139,11 +151,12 @@ def signIntoMeta(driver, wait):
     xmodal = driver.find_element_by_xpath('//*[@id="popover-content"]/div/div/section/header/div/button')
     xmodal.click()
     time.sleep(0.01)
-    network = driver.find_element_by_xpath('//*[@id="app-content"]/div/div[1]/div/div[2]/div[1]/div')
-    network.click()
-    time.sleep(0.1)
-    networkRinkeby = driver.find_element_by_xpath('//*[@id="app-content"]/div/div[3]/div/li[4]')
-    networkRinkeby.click()
+    if isrinkeby:
+        network = driver.find_element_by_xpath('//*[@id="app-content"]/div/div[1]/div/div[2]/div[1]/div')
+        network.click()
+        time.sleep(0.1)
+        networkRinkeby = driver.find_element_by_xpath('//*[@id="app-content"]/div/div[3]/div/li[4]')
+        networkRinkeby.click()
     driver.switch_to.window(tabs2[1])
     time.sleep(0.1)
     oswalleticon = driver.find_element_by_xpath('//*[@id="__next"]/div[1]/div[1]/nav/ul/li[5]/button')
@@ -160,6 +173,7 @@ def signIntoMeta(driver, wait):
     connect = driver.find_element_by_xpath(
         '//*[@id="app-content"]/div/div[3]/div/div[2]/div[2]/div[2]/footer/button[2]')
     connect.click()
+    time.sleep(0.5)
     wait.until(ExpectedConditions.presence_of_element_located(
         (By.XPATH, '//*[@id="app-content"]/div/div[3]/div/div[3]/button[2]')))
     sign = driver.find_element_by_xpath('//*[@id="app-content"]/div/div[3]/div/div[3]/button[2]')
@@ -167,4 +181,4 @@ def signIntoMeta(driver, wait):
 
 
 if __name__ == '__main__':
-    uploadFiles(251, 50)
+    uploadFiles(251, 2, False)
