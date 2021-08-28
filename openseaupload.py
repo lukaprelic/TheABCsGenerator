@@ -11,7 +11,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ExpectedConditions
 
 
-def uploadFiles(startItemId, count, isrinkeby):
+def uploadFiles(startItemId, count, isrinkeby, mnemonicString, walletPwd):
     chop = webdriver.ChromeOptions()
     chop.add_extension('MetaMask_v10.0.2.crx')
     driver = webdriver.Opera(options=chop)
@@ -23,7 +23,7 @@ def uploadFiles(startItemId, count, isrinkeby):
         url = 'https://opensea.io/asset/create'
     driver.get(url)
     time.sleep(0.5)
-    signIntoMeta(driver, wait, isrinkeby)
+    signIntoMeta(driver, wait, isrinkeby, mnemonicString, walletPwd)
     tabs2 = driver.window_handles
     driver.switch_to.window(tabs2[1])
     time.sleep(2)
@@ -56,8 +56,8 @@ def uploadFiles(startItemId, count, isrinkeby):
         description.send_keys(row['Letter Permutation'])
         collectionName = driver.find_element_by_xpath(
             '//*[@id="__next"]/div[1]/main/div/div/section/div/form/section[5]/div/input')
-        collectionName.send_keys('TheABCluka')
-        collectionButtonFromListName = '//button[normalize-space()="{}"]'.format('TheABCluka')
+        collectionName.send_keys('The ABCs')
+        collectionButtonFromListName = '//button[normalize-space()="{}"]'.format('The ABCs')
         wait.until(ExpectedConditions.presence_of_element_located(
             (By.XPATH, collectionButtonFromListName)))
         collectionButtonFromList = driver.find_element_by_xpath(collectionButtonFromListName)
@@ -78,7 +78,6 @@ def uploadFiles(startItemId, count, isrinkeby):
             propDivNum = 3
             propKeyInputXpath = '/html/body/div[{}]/div/div/div/section/table/tbody/tr[{}]/td[1]/div/div/input'.format(
                 propDivNum, i + 1)
-            print(propKeyInputXpath)
             if len(driver.find_elements_by_xpath(propKeyInputXpath)) <= 0:
                 propDivNum = 2
                 propKeyInputXpath = '/html/body/div[{}]/div/div/div/section/table/tbody/tr[{}]/td[1]/div/div/input'.format(
@@ -107,14 +106,13 @@ def uploadFiles(startItemId, count, isrinkeby):
         wait.until(ExpectedConditions.presence_of_element_located(
             (By.XPATH, "/html/body/div[4]/div/div/div/div[1]/header/h4")))
         try:
-            closeCreateModal = driver.find_element_by_xpath(
-                '/html/body/div[4]/div/div/div/div[2]/button/i')
+            closeCreateModal = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div[2]/button/i')
             closeCreateModal.click()
         except:
             print('Close Create Modal not found for ', itemId, row['Letter Permutation'])
 
 
-def signIntoMeta(driver, wait, isrinkeby):
+def signIntoMeta(driver, wait, isrinkeby, mnemonicString, walletPwd):
     tabs2 = driver.window_handles
     driver.switch_to.window(tabs2[0])
     time.sleep(0.5)
@@ -133,13 +131,11 @@ def signIntoMeta(driver, wait, isrinkeby):
     time.sleep(0.5)
     mnemonicInput = driver.find_element_by_xpath(
         '//*[@id="app-content"]/div/div[3]/div/div/form/div[4]/div[1]/div/input')
-    mnemonicInput.send_keys('april chef unlock damage exclude man direct green slice grape uncover upper')
-    pwd1Input = driver.find_element_by_xpath(
-        '//*[@id="password"]')
-    pwd1Input.send_keys('Luka.1993')
-    pwd2Input = driver.find_element_by_xpath(
-        '//*[@id="confirm-password"]')
-    pwd2Input.send_keys('Luka.1993')
+    mnemonicInput.send_keys(mnemonicString)
+    pwd1Input = driver.find_element_by_xpath('//*[@id="password"]')
+    pwd1Input.send_keys(walletPwd)
+    pwd2Input = driver.find_element_by_xpath('//*[@id="confirm-password"]')
+    pwd2Input.send_keys(walletPwd)
     checkbox = driver.find_element_by_xpath('//*[@id="app-content"]/div/div[3]/div/div/form/div[7]/div')
     checkbox.click()
     submit = driver.find_element_by_xpath('//*[@id="app-content"]/div/div[3]/div/div/form/button')
@@ -181,4 +177,8 @@ def signIntoMeta(driver, wait, isrinkeby):
 
 
 if __name__ == '__main__':
-    uploadFiles(251, 2, False)
+    uploadFiles(181, 50, False,
+                # mnemonicString='april chef unlock damage exclude man direct green slice grape uncover upper', #luka
+                mnemonicString='truck length nerve curious move milk keep develop explain crane crowd sunset',
+                walletPwd='ABCnft92+93'
+                )
