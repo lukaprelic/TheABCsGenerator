@@ -11,6 +11,27 @@ from PIL import Image, ImageOps
 
 existingCombinations = {}
 
+
+def generateSingleImage():
+    letter1 = 'L'
+    letter2 = 'F'
+    letter3 = 'G'
+    font = 'Serif Silver'
+    hat = 'None'
+    hatOffsets = offsets.Offsets('letterHatOffsets.csv')
+    background = 'Backgrounds/MoonSpecial.png'
+    generateImage(id=-1,
+                  hatOffsets=hatOffsets,
+                  fontAndColourComb=font,
+                  backgroundPath=background,
+                  borderColour='white',
+                  letter1Char=letter1,
+                  letter2Char=letter2,
+                  letter3Char=letter3,
+                  hat=hat,
+                  addBorder=False)
+
+
 def generateAlphabet():
     for index, letter2 in enumerate(ascii_lowercase):
         letter1 = 'A'
@@ -136,5 +157,6 @@ def addBorder(borderColour, img):
 
 
 if __name__ == '__main__':
-    # generateAlphabet()
-    generateAll(251, 50)
+    #generateAlphabet()
+    #generateAll(251, 50)
+    generateSingleImage()
