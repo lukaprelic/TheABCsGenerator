@@ -34,10 +34,11 @@ def uploadFiles(startItemId, count, isrinkeby, mnemonicString, walletPwd):
             continue
         print('Running row:', index, itemId)
         if index > 0:
+            createButtonXpath = '//*[@id="__next"]/div[1]/div[1]/nav/ul/div[1]/li[4]/a'
             wait.until(ExpectedConditions.presence_of_element_located(
-                (By.XPATH, '//*[@id="__next"]/div[1]/div[1]/nav/ul/li[4]/a')))
+                (By.XPATH, createButtonXpath)))
             createPage = driver.find_element_by_xpath(
-                '//*[@id="__next"]/div[1]/div[1]/nav/ul/li[4]/a')
+                createButtonXpath)
             createPage.click()
         filePath = 'Generated\\{} ABCs {} {}.png'.format(itemId, row['Letter Permutation'], row['Hat'])
         print(filePath, itemId, row['Background'], row['Font'], row['Font & Colour Combination'],
@@ -56,8 +57,8 @@ def uploadFiles(startItemId, count, isrinkeby, mnemonicString, walletPwd):
         description.send_keys(row['Letter Permutation'])
         collectionName = driver.find_element_by_xpath(
             '//*[@id="__next"]/div[1]/main/div/div/section/div/form/section[5]/div/input')
-        collectionName.send_keys('The ABCs')
-        collectionButtonFromListName = '//button[normalize-space()="{}"]'.format('The ABCs')
+        collectionName.send_keys('TheABCluka')
+        collectionButtonFromListName = '//button[normalize-space()="{}"]'.format('TheABCluka')
         wait.until(ExpectedConditions.presence_of_element_located(
             (By.XPATH, collectionButtonFromListName)))
         collectionButtonFromList = driver.find_element_by_xpath(collectionButtonFromListName)
@@ -103,11 +104,10 @@ def uploadFiles(startItemId, count, isrinkeby, mnemonicString, walletPwd):
         createNFT.click()
         print('creating nft ', itemId, row['Background'], row['Font'], row['Font & Colour Combination'],
               row['Hat'], row['Letter Permutation'])
-        '/html/body/div[4]/div/div/div/div[1]/header/h4'
         wait.until(ExpectedConditions.presence_of_element_located(
-            (By.XPATH, "/html/body/div[4]/div/div/div/div[1]/header/h4")))
+            (By.XPATH, "/html/body/div[6]/div/div/div/div[2]/button")))
         try:
-            closeCreateModal = driver.find_element_by_xpath('/html/body/div[4]/div/div/div/div[2]/button/i')
+            closeCreateModal = driver.find_element_by_xpath('/html/body/div[6]/div/div/div/div[2]/button')
             closeCreateModal.click()
         except:
             print('Close Create Modal not found for ', itemId, row['Letter Permutation'])
@@ -156,7 +156,7 @@ def signIntoMeta(driver, wait, isrinkeby, mnemonicString, walletPwd):
         networkRinkeby.click()
     driver.switch_to.window(tabs2[1])
     time.sleep(0.1)
-    oswalleticon = driver.find_element_by_xpath('//*[@id="__next"]/div[1]/div[1]/nav/ul/li[5]/button')
+    oswalleticon = driver.find_element_by_xpath('//*[@id="__next"]/div[1]/div[1]/nav/ul/div[2]/li/button')
     oswalleticon.click()
     time.sleep(0.1)
     metaicon = driver.find_element_by_xpath('//*[@id="__next"]/div[1]/aside/div[2]/div/div[2]/ul/li[1]/button')

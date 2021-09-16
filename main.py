@@ -158,5 +158,5 @@ def addBorder(borderColour, img):
 
 if __name__ == '__main__':
     #generateAlphabet()
-    #generateAll(251, 50)
-    generateSingleImage()
+    generateAll(251, 4750)
+    #generateSingleImage()
