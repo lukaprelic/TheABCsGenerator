@@ -80,8 +80,10 @@ def generateCombination(existingCombinations: dict):
     letter2 = np.random.choice(list(letterRarities.keys()), p=list(letterRarities.values()))
     letter3 = np.random.choice(list(letterRarities.keys()), p=list(letterRarities.values()))
     hat = np.random.choice(list(hatRarity.keys()), p=list(hatRarity.values()))
-    if existingCombinations.get((background, letter1, letter2, letter3, fontAndColourCombination, hat), None) is not None:
-        generateCombination(existingCombinations)
+    if (background, letter1, letter2, letter3, fontAndColourCombination, hat) in existingCombinations:
+        print('DUPLICATE FOUND!!! ',(background, letter1, letter2, letter3, fontAndColourCombination, hat))
+        return generateCombination(existingCombinations)
+
     existingCombinations[(background, letter1, letter2, letter3, fontAndColourCombination, hat)] = True
     return background, letter1, letter2, letter3, fontAndColourCombination, hat
 

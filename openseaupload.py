@@ -178,7 +178,7 @@ def signIntoMeta(driver, wait, isrinkeby, mnemonicString, walletPwd):
 
 
 if __name__ == '__main__':
-    uploadFiles(186, 65, False,
-                mnemonicString='',
+    uploadFiles(251, 4750, True,
+                mnemonicString='', #luka
                 walletPwd=''
                 )
