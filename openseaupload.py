@@ -83,11 +83,11 @@ def uploadFiles(startItemId, count, isrinkeby, mnemonicString, walletPwd):
             '//*[@id="__next"]/div[1]/main/div/div/section/div/form/section[6]/div[1]/div/div[2]/button')
         propertiesPlusButton.click()
         print('starting properties population')
-        time.sleep(1.5)
+        time.sleep(1.6)
         for i, (key, value) in enumerate(row.items()):
             if key in ['ID', 'Special', 'Name']:
                 continue
-            time.sleep(0.01)
+            time.sleep(0.000005)
             wait.until(ExpectedConditions.presence_of_element_located(
                 (By.XPATH, '//button[normalize-space()="Add more"]')))
             collectionAddPropButton = driver.find_element_by_xpath('//button[normalize-space()="Add more"]')
@@ -96,12 +96,12 @@ def uploadFiles(startItemId, count, isrinkeby, mnemonicString, walletPwd):
             propKeyInputXpath = '/html/body/div[{}]/div/div/div/section/table/tbody/tr[{}]/td[1]/div/div/input'.format(
                 propDivNum, i + 1)
             if len(driver.find_elements_by_xpath(propKeyInputXpath)) <= 0:
-                print("prop fail 2", propKeyInputXpath)
+                #print("prop fail 2", propKeyInputXpath)
                 propDivNum = 2
                 propKeyInputXpath = '/html/body/div[{}]/div/div/div/section/table/tbody/tr[{}]/td[1]/div/div/input'.format(
                     propDivNum, i + 1)
             elif len(driver.find_elements_by_xpath(propKeyInputXpath)) <= 0:
-                print("prop fail 5", propKeyInputXpath)
+                #print("prop fail 5", propKeyInputXpath)
                 propDivNum = 5
                 propKeyInputXpath = '/html/body/div[{}]/div/div/div/section/table/tbody/tr[{}]/td[1]/div/div/input'.format(
                     propDivNum, i + 1)
@@ -199,7 +199,7 @@ def signIntoMeta(driver, wait, isrinkeby, mnemonicString, walletPwd):
     driver.switch_to.window(tabs2[2])
     print(tabs2)
     print(driver.title)
-    time.sleep(10)
+    time.sleep(5)
 #    print(driver.title)
 #    wait.until(ExpectedConditions.presence_of_element_located(
 #      (By.XPATH, '//*[@id="app-content"]/div/div[3]/div/div[3]/button[2]')))
