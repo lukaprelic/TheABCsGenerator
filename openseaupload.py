@@ -100,7 +100,7 @@ def uploadFiles(startItemId, count, isrinkeby, mnemonicString, walletPwd):
                 propDivNum = 2
                 propKeyInputXpath = '/html/body/div[{}]/div/div/div/section/table/tbody/tr[{}]/td[1]/div/div/input'.format(
                     propDivNum, i + 1)
-            elif len(driver.find_elements_by_xpath(propKeyInputXpath)) <= 0:
+            if len(driver.find_elements_by_xpath(propKeyInputXpath)) <= 0:
                 #print("prop fail 5", propKeyInputXpath)
                 propDivNum = 5
                 propKeyInputXpath = '/html/body/div[{}]/div/div/div/section/table/tbody/tr[{}]/td[1]/div/div/input'.format(
