@@ -200,11 +200,11 @@ def signIntoMeta(driver, wait, isrinkeby, mnemonicString, walletPwd):
     print(tabs2)
     print(driver.title)
     time.sleep(5)
-#    print(driver.title)
-#    wait.until(ExpectedConditions.presence_of_element_located(
-#      (By.XPATH, '//*[@id="app-content"]/div/div[3]/div/div[3]/button[2]')))
-    #sign = driver.find_element_by_xpath('//*[@id="app-content"]/div/div[3]/div/div[3]/button[2]')
-    #sign.click()
+    print(driver.title)
+    wait.until(ExpectedConditions.presence_of_element_located(
+      (By.XPATH, '//*[@id="app-content"]/div/div[3]/div/div[3]/button[2]')))
+    sign = driver.find_element_by_xpath('//*[@id="app-content"]/div/div[3]/div/div[3]/button[2]')
+    sign.click()
     print('sign into meta completed')
 
 
