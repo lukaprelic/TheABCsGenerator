@@ -62,7 +62,7 @@ def uploadFiles(startItemId, count, isrinkeby, mnemonicString, walletPwd):
         description.send_keys(row['Letter Permutation'])
         time.sleep(0.2)
         collectionName = driver.find_element_by_xpath(
-            '//*[@id="__next"]/div[1]/main/div/div/section/div/form/section[5]/div/input')
+            '//*[@id="__next"]/div[1]/main/div/div/section/div/form/div[5]/div/div[2]/input')
         collectionName.send_keys(collName)
         collectionButtonFromListName = '//button[normalize-space()="{}"]'.format(collName)
         try:
@@ -80,7 +80,7 @@ def uploadFiles(startItemId, count, isrinkeby, mnemonicString, walletPwd):
         time.sleep(0.1)
 
         propertiesPlusButton = driver.find_element_by_xpath(
-            '//*[@id="__next"]/div[1]/main/div/div/section/div/form/section[6]/div[1]/div/div[2]/button')
+            '//*[@id="__next"]/div[1]/main/div/div/section/div/form/section/div[1]/div/div[2]/button')
         propertiesPlusButton.click()
         print('starting properties population')
         time.sleep(1.6)
